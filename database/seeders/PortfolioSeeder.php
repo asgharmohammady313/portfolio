@@ -285,12 +285,12 @@ class PortfolioSeeder extends Seeder
                 }
                 
                 $data = [
-                    'name' => 'Asghar',
-                    'email' => 'johndoe@example.com',
+                    'name' => 'Asghar Mohammadi',
+                    'email' => 'asgharmohammay313@gmail.com',
                     'avatar' => 'assets/common/img/avatar/default.png',
                     'cover' => 'assets/common/img/cover/default.png',
-                    'phone' => '12025550191',
-                    'address' => '1609 Nuzum Court, Cheektowaga, NY 14225',
+                    'phone' => '0766989461',
+                    'address' => 'Kabul, Afghanistan',
                     'description' => 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Non corporis assumenda maiores. Impedit quia necessitatibus adipisci sit quibusdam aspernatur mollitia, deleniti, id, molestiae a accusantium modi sint expedita aliquam labore.',
                     'taglines' => ["I am Software Engineer", "I am Web Developer", "I am Full Stack Engineer"],
                     'social_links' => [
@@ -302,17 +302,17 @@ class PortfolioSeeder extends Seeder
                         [
                             'title' => 'Github',
                             'iconClass' => 'fab fa-github',
-                            'link' => 'https://github.com'
+                            'link' => 'https://github.com/asgharmohammady313'
                         ],
                         [
                             'title' => 'Facebook',
                             'iconClass' => 'fab fa-facebook',
-                            'link' => 'https://www.facebook.com'
+                            'link' => 'https://www.facebook.com/profile.php?id=100083561838511'
                         ],
                         [
                             'title' => 'Mail',
                             'iconClass' => 'far fa-envelope',
-                            'link' => 'mailto:johndoe@example.com'
+                            'link' => 'mailto:asgharmohammay313@gmail.com'
                         ],
                     ],
                     'seederCV' => 'assets/common/cv/default.pdf',
