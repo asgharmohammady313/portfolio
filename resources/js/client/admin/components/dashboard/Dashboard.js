@@ -147,6 +147,7 @@ const Dashboard = () => {
             }
         })
             .then(response => {
+               console.log('ADMIN STATS RESPONSE:', response);
                 Utils.handleSuccessResponse(response, () => {
                     const result = response?.data?.payload;
 
