@@ -291,7 +291,7 @@ class PortfolioSeeder extends Seeder
                     'cover' => 'assets/common/img/cover/default.png',
                     'phone' => '0766989461',
                     'address' => 'Kabul, Afghanistan',
-                    'description' => 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Non corporis assumenda maiores. Impedit quia necessitatibus adipisci sit quibusdam aspernatur mollitia, deleniti, id, molestiae a accusantium modi sint expedita aliquam labore.',
+                    'description' => ''description' => 'I am a passionate Full Stack Developer from Afghanistan, focused on building modern, responsive and user-friendly web applications using Laravel, PHP, React and MySQL.',',
                     'taglines' => ["I am Software Engineer", "I am Web Developer", "I am Full Stack Engineer"],
                     'social_links' => [
                         [

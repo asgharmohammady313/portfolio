@@ -3,30 +3,39 @@ import moment from 'moment';
 import HTTP from '../../../common/helpers/HTTP';
 import Routes from '../../../common/helpers/Routes';
 import Utils from '../../../common/helpers/Utils';
-import { Card, Col, Image, notification, Row, Spin, Typography, Space } from 'antd';
-import Icon, { InfoCircleOutlined } from '@ant-design/icons';
+
+import {
+    Card,
+    Col,
+    Image,
+    Row,
+    Spin,
+    Typography
+} from 'antd';
+
+import Icon from '@ant-design/icons';
+
 import { BiArchive } from 'react-icons/bi';
-import { useHistory } from 'react-router-dom';
-import StatCard from './StatCard';
 import { GoKeyboard } from 'react-icons/go';
 import { BsBriefcase } from 'react-icons/bs';
 import { GiSecretBook } from 'react-icons/gi';
 import { AiOutlineTeam } from 'react-icons/ai';
-import { RiServiceLine, RiMessage3Line } from 'react-icons/ri';
+import {
+    RiServiceLine,
+    RiMessage3Line
+} from 'react-icons/ri';
+
+import { useHistory } from 'react-router-dom';
 import { TinyArea } from '@ant-design/charts';
 import styled from 'styled-components';
-import { useSelector } from 'react-redux';
+
+import StatCard from './StatCard';
 
 const { Text } = Typography;
 
 const imageHeight = 155;
 
-const imageStyle = {
-    objectFit: 'cover',
-    opacity: '0.8'
-}
-
-const WallpaperLoading = styled.div`
+const TemplateLoading = styled.div`
     background: ghostwhite;
     width: 100%;
     height: ${imageHeight}px;
@@ -37,34 +46,39 @@ const WallpaperLoading = styled.div`
 `;
 
 const Dashboard = () => {
-    let history = useHistory();
+    const history = useHistory();
 
-    const [wallpaper, setWallpaper] = useState(null);
-    const { demoMode } = useSelector(state => state.globalState);
-
-    const todayStartDateUtc = moment.utc(moment().startOf('day')).format('YYYY-MM-DD HH:mm:ss');
-    const todayEndDateUtc = moment.utc(moment().endOf('day')).format('YYYY-MM-DD HH:mm:ss');
-
-    const thisWeekStartDateUtc = moment.utc(moment().startOf('week').startOf('day')).format('YYYY-MM-DD HH:mm:ss');
-    const thisWeekEndDateUtc = moment.utc(moment().endOf('week').endOf('day')).format('YYYY-MM-DD HH:mm:ss');
-
-    const thisMonthStartDateUtc = moment.utc(moment().startOf('month').startOf('day')).format('YYYY-MM-DD HH:mm:ss');
-    const thisMonthEndDateUtc = moment.utc(moment().endOf('month').endOf('day')).format('YYYY-MM-DD HH:mm:ss');
+    // --------------------------------------------------
+    // State
+    // --------------------------------------------------
 
     const [loading, setLoading] = useState(true);
+
+    const [currentTemplate, setCurrentTemplate] = useState(null);
+
+    const [colors, setColors] = useState({
+        skill: '#1890ff',
+        education: '#52c41a',
+        experience: '#722ed1',
+        project: '#fa8c16',
+        service: '#13c2c2',
+        visitor: '#eb2f96',
+        message: '#2f54eb'
+    });
 
     const [visitorData, setVisitorData] = useState({
         total: 0,
         today: 0,
         thisWeek: 0,
         thisMonth: 0,
-        trend: []
+        trend: [0, 0]
     });
+
     const [messageData, setMessageData] = useState({
         total: 0,
         today: 0,
         thisWeek: 0,
-        thisMonth: 0,
+        thisMonth: 0
     });
 
     const [skillData, setSkillData] = useState({
@@ -87,9 +101,184 @@ const Dashboard = () => {
         total: 0
     });
 
-    const [currentTemplate, setCurrentTemplate] = useState(null);
+    // --------------------------------------------------
+    // Dates
+    // --------------------------------------------------
 
-    const [colors, setColors] = useState({});
+    const todayStartDateUtc = moment
+        .utc(moment().startOf('day'))
+        .format('YYYY-MM-DD HH:mm:ss');
+
+    const todayEndDateUtc = moment
+        .utc(moment().endOf('day'))
+        .format('YYYY-MM-DD HH:mm:ss');
+
+    const thisWeekStartDateUtc = moment
+        .utc(moment().startOf('week').startOf('day'))
+        .format('YYYY-MM-DD HH:mm:ss');
+
+    const thisWeekEndDateUtc = moment
+        .utc(moment().endOf('week').endOf('day'))
+        .format('YYYY-MM-DD HH:mm:ss');
+
+    const thisMonthStartDateUtc = moment
+        .utc(moment().startOf('month').startOf('day'))
+        .format('YYYY-MM-DD HH:mm:ss');
+
+    const thisMonthEndDateUtc = moment
+        .utc(moment().endOf('month').endOf('day'))
+        .format('YYYY-MM-DD HH:mm:ss');
+
+    // --------------------------------------------------
+    // Load Dashboard Data
+    // --------------------------------------------------
+
+    const loadData = (_loading = true) => {
+        setLoading(_loading);
+
+        HTTP.get(Routes.api.admin.stats, {
+            params: {
+                todayStartDate: todayStartDateUtc,
+                todayEndDate: todayEndDateUtc,
+                thisWeekStartDate: thisWeekStartDateUtc,
+                thisWeekEndDate: thisWeekEndDateUtc,
+                thisMonthStartDate: thisMonthStartDateUtc,
+                thisMonthEndDate: thisMonthEndDateUtc
+            }
+        })
+            .then(response => {
+                Utils.handleSuccessResponse(response, () => {
+                    const result = response?.data?.payload;
+
+                    if (!result) {
+                        return;
+                    }
+
+                    // ------------------------------------
+                    // Visitors
+                    // ------------------------------------
+
+                    let trendArray = [];
+
+                    if (
+                        result.visitors &&
+                        Array.isArray(result.visitors.trend)
+                    ) {
+                        trendArray = result.visitors.trend.map(
+                            element => {
+                                const count = parseInt(
+                                    element?.count || 0,
+                                    10
+                                );
+
+                                return Number.isNaN(count)
+                                    ? 0
+                                    : count;
+                            }
+                        );
+                    }
+
+                    if (trendArray.length === 0) {
+                        trendArray = [0, 0];
+                    } else if (trendArray.length === 1) {
+                        trendArray.unshift(0);
+                    }
+
+                    setVisitorData({
+                        total: result.visitors?.total || 0,
+                        today: result.visitors?.totalToday || 0,
+                        thisWeek:
+                            result.visitors?.totalThisWeek || 0,
+                        thisMonth:
+                            result.visitors?.totalThisMonth || 0,
+                        trend: trendArray
+                    });
+
+                    // ------------------------------------
+                    // Messages
+                    // ------------------------------------
+
+                    setMessageData({
+                        total: result.message?.total || 0,
+                        today: result.message?.totalToday || 0,
+                        thisWeek:
+                            result.message?.totalThisWeek || 0,
+                        thisMonth:
+                            result.message?.totalThisMonth || 0
+                    });
+
+                    // ------------------------------------
+                    // Skills
+                    // ------------------------------------
+
+                    setSkillData({
+                        total: result.skills?.total || 0
+                    });
+
+                    // ------------------------------------
+                    // Education
+                    // ------------------------------------
+
+                    setEducationData({
+                        total: result.educations?.total || 0
+                    });
+
+                    // ------------------------------------
+                    // Experience
+                    // ------------------------------------
+
+                    setExperienceData({
+                        total: result.experiences?.total || 0
+                    });
+
+                    // ------------------------------------
+                    // Projects
+                    // ------------------------------------
+
+                    setProjectData({
+                        total: result.projects?.total || 0
+                    });
+
+                    // ------------------------------------
+                    // Services
+                    // ------------------------------------
+
+                    setServicesData({
+                        total: result.services?.total || 0
+                    });
+
+                    // ------------------------------------
+                    // Current Template
+                    // ------------------------------------
+
+                    if (
+                        result.currentTemplate !== undefined &&
+                        Array.isArray(Utils.templates)
+                    ) {
+                        const template =
+                            Utils.templates.find(
+                                item =>
+                                    item.id ===
+                                    result.currentTemplate
+                            );
+
+                        setCurrentTemplate(
+                            template || null
+                        );
+                    }
+                });
+            })
+            .catch(error => {
+                Utils.handleException(error);
+            })
+            .finally(() => {
+                setLoading(false);
+            });
+    };
+
+    // --------------------------------------------------
+    // Initial Load
+    // --------------------------------------------------
 
     useEffect(() => {
         setColors({
@@ -99,133 +288,26 @@ const Dashboard = () => {
             project: Utils.randomHexColor(),
             service: Utils.randomHexColor(),
             visitor: Utils.randomHexColor(),
-            message: Utils.randomHexColor(),
-        })
+            message: Utils.randomHexColor()
+        });
 
         loadData();
-        getWallpaper();
-
-        if (demoMode) {
-            notification.open({
-                message: (
-                    <div className="text-center">
-                        <a target="_blank" rel="noreferrer" href="https://github.com/arifszn/ezfolio">
-                            <img src="https://img.shields.io/github/stars/arifszn/ezfolio?style=social" alt="Github Star"/>
-                        </a>
-                    </div>
-                ),
-                description: <React.Fragment>
-                    <Space direction="vertical" size="middle">
-                        <div className="text-center">
-                            Show your ❤️ and support by giving a ⭐️ on <a target="_blank" rel="noreferrer" href="https://github.com/arifszn/ezfolio">GitHub</a>.
-                        </div>
-                        <div className="text-center">
-                            <a href={Routes.web.frontend.home} target="_blank" rel="noreferrer">Visit Front Panel</a>
-                        </div>
-                    </Space>
-                </React.Fragment>,
-                placement: 'bottomRight',
-                duration: 0,
-                key: 'star-notification'
-            });
-        }
     }, []);
 
-const getWallpaper = () => {
-    setWallpaper(null);
-};
-
-    const loadData = (_loading = true) => {
-        setLoading(_loading);
-
-        HTTP.get(Routes.api.admin.stats, {   
-            params: {
-                todayStartDate: todayStartDateUtc,
-                todayEndDate: todayEndDateUtc,
-                thisWeekStartDate: thisWeekStartDateUtc,
-                thisWeekEndDate: thisWeekEndDateUtc,
-                thisMonthStartDate: thisMonthStartDateUtc,
-                thisMonthEndDate: thisMonthEndDateUtc,
-            }
-        })
-        .then(response => {
-            Utils.handleSuccessResponse(response, () => {
-                const result = response.data.payload;
-
-                if (result) {
-                    //visitors
-                    let trendArray = [];
-
-                    result.visitors.trend.forEach(element => {
-                        trendArray.push(parseInt(element.count));
-                    });
-
-                    if (trendArray.length === 0) {
-                        trendArray = [0, 0];
-                    } else if (trendArray.length === 1) {
-                        trendArray.unshift(0);
-                    }
-
-                    setVisitorData({
-                        total: result.visitors.total,
-                        today: result.visitors.totalToday,
-                        thisWeek: result.visitors.totalThisWeek,
-                        thisMonth: result.visitors.totalThisMonth,
-                        trend: trendArray
-                    });
-
-                    //message
-                    setMessageData({
-                        total: result.message.total,
-                        today: result.message.totalToday,
-                        thisWeek: result.message.totalThisWeek,
-                        thisMonth: result.message.totalThisMonth
-                    });
-
-                    //skills
-                    setSkillData({
-                        total: result.skills.total,
-                    });
-
-                    //education
-                    setEducationData({
-                        total: result.educations.total,
-                    });
-
-                    //experience
-                    setExperienceData({
-                        total: result.experiences.total,
-                    });
-
-                    //project
-                    setProjectData({
-                        total: result.projects.total,
-                    });
-
-                    //service
-                    setServicesData({
-                        total: result.services.total,
-                    });
-
-                    //template
-                    const filteredArray = Utils.templates.filter(template => template.id === result.currentTemplate);
-                    if (filteredArray.length) {
-                        setCurrentTemplate(filteredArray[0]);
-                    }
-                }
-            });
-        })
-        .catch(error => {
-            Utils.handleException(error);
-        }).finally(() => {
-            setLoading(false);
-        });
-    }
+    // --------------------------------------------------
+    // Render
+    // --------------------------------------------------
 
     return (
         <React.Fragment>
+
+            {/* ==========================================
+                TOP STAT CARDS
+            =========================================== */}
+
             <Row gutter={24}>
-                <Col 
+
+                <Col
                     xl={24}
                     lg={24}
                     md={24}
@@ -233,77 +315,133 @@ const getWallpaper = () => {
                     xs={24}
                 >
                     <Row gutter={24}>
-                        <Col 
+
+                        {/* Skill */}
+
+                        <Col
                             xl={6}
                             lg={6}
                             md={12}
                             sm={24}
                             xs={24}
-                            style={{marginBottom: 24}}
+                            style={{
+                                marginBottom: 24
+                            }}
                         >
-                            <StatCard 
-                                link={Routes.web.admin.portfolioSkills} 
+                            <StatCard
+                                link={
+                                    Routes.web.admin
+                                        .portfolioSkills
+                                }
                                 loading={loading}
-                                icon={<Icon component={GoKeyboard}/>}
-                                color={colors.skill} 
-                                title='Skill' 
+                                icon={
+                                    <Icon
+                                        component={GoKeyboard}
+                                    />
+                                }
+                                color={colors.skill}
+                                title="Skill"
                                 number={skillData.total}
                             />
                         </Col>
-                        <Col 
+
+                        {/* Education */}
+
+                        <Col
                             xl={6}
                             lg={6}
                             md={12}
                             sm={24}
                             xs={24}
-                            style={{marginBottom: 24}}
+                            style={{
+                                marginBottom: 24
+                            }}
                         >
-                            <StatCard 
-                                link={Routes.web.admin.portfolioEducation} 
+                            <StatCard
+                                link={
+                                    Routes.web.admin
+                                        .portfolioEducation
+                                }
                                 loading={loading}
-                                icon={<Icon component={GiSecretBook}/>}
-                                color={colors.education} 
-                                title='Education' 
+                                icon={
+                                    <Icon
+                                        component={GiSecretBook}
+                                    />
+                                }
+                                color={colors.education}
+                                title="Education"
                                 number={educationData.total}
                             />
                         </Col>
-                        <Col 
+
+                        {/* Experience */}
+
+                        <Col
                             xl={6}
                             lg={6}
                             md={12}
                             sm={24}
                             xs={24}
-                            style={{marginBottom: 24}}
+                            style={{
+                                marginBottom: 24
+                            }}
                         >
-                            <StatCard 
-                                link={Routes.web.admin.portfolioExperiences} 
+                            <StatCard
+                                link={
+                                    Routes.web.admin
+                                        .portfolioExperiences
+                                }
                                 loading={loading}
-                                icon={<Icon component={BsBriefcase}/>}
-                                color={colors.experience} 
-                                title='Experience' 
-                                number={experienceData.total}
+                                icon={
+                                    <Icon
+                                        component={BsBriefcase}
+                                    />
+                                }
+                                color={colors.experience}
+                                title="Experience"
+                                number={
+                                    experienceData.total
+                                }
                             />
                         </Col>
-                        <Col 
+
+                        {/* Project */}
+
+                        <Col
                             xl={6}
                             lg={6}
                             md={12}
                             sm={24}
                             xs={24}
-                            style={{marginBottom: 24}}
+                            style={{
+                                marginBottom: 24
+                            }}
                         >
-                            <StatCard 
-                                link={Routes.web.admin.portfolioProjects} 
+                            <StatCard
+                                link={
+                                    Routes.web.admin
+                                        .portfolioProjects
+                                }
                                 loading={loading}
-                                icon={<Icon component={BiArchive}/>}
-                                color={colors.project} 
-                                title='Project' 
+                                icon={
+                                    <Icon
+                                        component={BiArchive}
+                                    />
+                                }
+                                color={colors.project}
+                                title="Project"
                                 number={projectData.total}
                             />
                         </Col>
+
                     </Row>
                 </Col>
-                <Col 
+
+                {/* ==========================================
+                    MAIN SECTION
+                =========================================== */}
+
+                <Col
                     xl={18}
                     lg={18}
                     md={24}
@@ -311,185 +449,396 @@ const getWallpaper = () => {
                     xs={24}
                 >
                     <Row gutter={24}>
-                        <Col 
+
+                        {/* Service */}
+
+                        <Col
                             xl={8}
                             lg={10}
                             md={12}
                             sm={24}
                             xs={24}
-                            style={{marginBottom: 24}}
+                            style={{
+                                marginBottom: 24
+                            }}
                         >
-                            <StatCard 
-                                link={Routes.web.admin.portfolioServices} 
+                            <StatCard
+                                link={
+                                    Routes.web.admin
+                                        .portfolioServices
+                                }
                                 loading={loading}
-                                icon={<Icon component={RiServiceLine}/>}
-                                color={colors.service} 
-                                title='Service' 
-                                number={servicesData.total}
+                                icon={
+                                    <Icon
+                                        component={RiServiceLine}
+                                    />
+                                }
+                                color={colors.service}
+                                title="Service"
+                                number={
+                                    servicesData.total
+                                }
                             />
                         </Col>
-                        <Col 
+
+                        {/* Visitor Trend */}
+
+                        <Col
                             xl={16}
                             lg={14}
                             md={12}
                             sm={24}
                             xs={24}
-                            style={{marginBottom: 24}}
+                            style={{
+                                marginBottom: 24
+                            }}
                         >
                             <Card
-                                hoverable={true}
+                                hoverable
                                 bordered={false}
                                 loading={loading}
-                                className='z-shadow'
-                                style={{cursor: 'default'}}
+                                className="z-shadow"
+                                style={{
+                                    cursor: 'default'
+                                }}
                             >
                                 <Row>
-                                    <Col md={24} sm={24} xs={24} style={{textAlign: 'center'}}>
-                                        <Text type={'secondary'}>Visitor Trend</Text>
+
+                                    <Col
+                                        md={24}
+                                        sm={24}
+                                        xs={24}
+                                        style={{
+                                            textAlign: 'center'
+                                        }}
+                                    >
+                                        <Text type="secondary">
+                                            Visitor Trend
+                                        </Text>
                                     </Col>
-                                    <Col md={24} sm={24} xs={24} style={{textAlign: 'center'}}>
+
+                                    <Col
+                                        md={24}
+                                        sm={24}
+                                        xs={24}
+                                        style={{
+                                            textAlign: 'center'
+                                        }}
+                                    >
                                         <TinyArea
                                             height={75}
-                                            showTitle={true}
-                                            autoFit={true}
-                                            data={visitorData.trend}
-                                            smooth={true}
+                                            autoFit
+                                            data={
+                                                visitorData.trend
+                                            }
+                                            smooth
                                         />
                                     </Col>
+
                                 </Row>
                             </Card>
                         </Col>
+
+                        {/* ==================================
+                            VISITORS
+                        =================================== */}
+
                         <Col
                             xl={24}
                             lg={24}
                             md={24}
                             sm={24}
                             xs={24}
-                            style={{marginBottom: 24}}
+                            style={{
+                                marginBottom: 24
+                            }}
                         >
                             <Card
-                                hoverable={true}
+                                hoverable
                                 onClick={() => {
-                                    history.push(Routes.web.admin.visitors);
+                                    history.push(
+                                        Routes.web.admin
+                                            .visitors
+                                    );
                                 }}
                                 bordered={false}
                                 loading={loading}
-                                className='z-shadow'
+                                className="z-shadow"
                             >
                                 <Row>
-                                    <Col md={24} sm={24} xs={24} style={{textAlign: 'center', paddingBottom: '14px'}}>
-                                        <Text type={'secondary'}>Visitor</Text>
+
+                                    <Col
+                                        md={24}
+                                        sm={24}
+                                        xs={24}
+                                        style={{
+                                            textAlign: 'center',
+                                            paddingBottom: '14px'
+                                        }}
+                                    >
+                                        <Text type="secondary">
+                                            Visitor
+                                        </Text>
                                     </Col>
-                                    <Col md={6} sm={24} xs={24}>
+
+                                    <Col
+                                        md={6}
+                                        sm={24}
+                                        xs={24}
+                                    >
                                         <StatCard
                                             isCard={false}
                                             loading={loading}
-                                            icon={<Icon component={AiOutlineTeam}/>}
-                                            color={colors.visitor} 
-                                            title='Total' 
-                                            number={visitorData.total}
+                                            icon={
+                                                <Icon
+                                                    component={
+                                                        AiOutlineTeam
+                                                    }
+                                                />
+                                            }
+                                            color={
+                                                colors.visitor
+                                            }
+                                            title="Total"
+                                            number={
+                                                visitorData.total
+                                            }
                                         />
                                     </Col>
-                                    <Col md={6} sm={24} xs={24}>
+
+                                    <Col
+                                        md={6}
+                                        sm={24}
+                                        xs={24}
+                                    >
                                         <StatCard
                                             isCard={false}
                                             loading={loading}
-                                            icon={<Icon component={AiOutlineTeam}/>}
-                                            color={colors.visitor} 
-                                            title='This Month' 
-                                            number={visitorData.thisMonth}
+                                            icon={
+                                                <Icon
+                                                    component={
+                                                        AiOutlineTeam
+                                                    }
+                                                />
+                                            }
+                                            color={
+                                                colors.visitor
+                                            }
+                                            title="This Month"
+                                            number={
+                                                visitorData.thisMonth
+                                            }
                                         />
                                     </Col>
-                                    <Col md={6} sm={24} xs={24}>
+
+                                    <Col
+                                        md={6}
+                                        sm={24}
+                                        xs={24}
+                                    >
                                         <StatCard
                                             isCard={false}
                                             loading={loading}
-                                            icon={<Icon component={AiOutlineTeam}/>}
-                                            color={colors.visitor} 
-                                            title='This Week' 
-                                            number={visitorData.thisWeek}
+                                            icon={
+                                                <Icon
+                                                    component={
+                                                        AiOutlineTeam
+                                                    }
+                                                />
+                                            }
+                                            color={
+                                                colors.visitor
+                                            }
+                                            title="This Week"
+                                            number={
+                                                visitorData.thisWeek
+                                            }
                                         />
                                     </Col>
-                                    <Col md={6} sm={24} xs={24}>
+
+                                    <Col
+                                        md={6}
+                                        sm={24}
+                                        xs={24}
+                                    >
                                         <StatCard
                                             isCard={false}
                                             loading={loading}
-                                            icon={<Icon component={AiOutlineTeam}/>}
-                                            color={colors.visitor} 
-                                            title='Today' 
-                                            number={visitorData.today}
+                                            icon={
+                                                <Icon
+                                                    component={
+                                                        AiOutlineTeam
+                                                    }
+                                                />
+                                            }
+                                            color={
+                                                colors.visitor
+                                            }
+                                            title="Today"
+                                            number={
+                                                visitorData.today
+                                            }
                                         />
                                     </Col>
+
                                 </Row>
                             </Card>
                         </Col>
+
+                        {/* ==================================
+                            MESSAGES
+                        =================================== */}
+
                         <Col
                             xl={24}
                             lg={24}
                             md={24}
                             sm={24}
                             xs={24}
-                            style={{marginBottom: 24}}
+                            style={{
+                                marginBottom: 24
+                            }}
                         >
-                        <Card
-                                hoverable={true}
+                            <Card
+                                hoverable
                                 onClick={() => {
-                                    history.push(Routes.web.admin.messages);
+                                    history.push(
+                                        Routes.web.admin
+                                            .messages
+                                    );
                                 }}
                                 bordered={false}
                                 loading={loading}
-                                className='z-shadow'
+                                className="z-shadow"
                             >
                                 <Row>
-                                    <Col md={24} sm={24} xs={24} style={{textAlign: 'center', paddingBottom: '14px'}}>
-                                        <Text type={'secondary'}>Message</Text>
+
+                                    <Col
+                                        md={24}
+                                        sm={24}
+                                        xs={24}
+                                        style={{
+                                            textAlign: 'center',
+                                            paddingBottom: '14px'
+                                        }}
+                                    >
+                                        <Text type="secondary">
+                                            Message
+                                        </Text>
                                     </Col>
-                                    <Col md={6} sm={24} xs={24}>
+
+                                    <Col
+                                        md={6}
+                                        sm={24}
+                                        xs={24}
+                                    >
                                         <StatCard
                                             isCard={false}
                                             loading={loading}
-                                            icon={<Icon component={RiMessage3Line}/>}
-                                            color={colors.message} 
-                                            title='Total' 
-                                            number={messageData.total}
+                                            icon={
+                                                <Icon
+                                                    component={
+                                                        RiMessage3Line
+                                                    }
+                                                />
+                                            }
+                                            color={
+                                                colors.message
+                                            }
+                                            title="Total"
+                                            number={
+                                                messageData.total
+                                            }
                                         />
                                     </Col>
-                                    <Col md={6} sm={24} xs={24}>
+
+                                    <Col
+                                        md={6}
+                                        sm={24}
+                                        xs={24}
+                                    >
                                         <StatCard
                                             isCard={false}
                                             loading={loading}
-                                            icon={<Icon component={RiMessage3Line}/>}
-                                            color={colors.message} 
-                                            title='This Month' 
-                                            number={messageData.thisMonth}
+                                            icon={
+                                                <Icon
+                                                    component={
+                                                        RiMessage3Line
+                                                    }
+                                                />
+                                            }
+                                            color={
+                                                colors.message
+                                            }
+                                            title="This Month"
+                                            number={
+                                                messageData.thisMonth
+                                            }
                                         />
                                     </Col>
-                                    <Col md={6} sm={24} xs={24}>
+
+                                    <Col
+                                        md={6}
+                                        sm={24}
+                                        xs={24}
+                                    >
                                         <StatCard
                                             isCard={false}
                                             loading={loading}
-                                            icon={<Icon component={RiMessage3Line}/>}
-                                            color={colors.message} 
-                                            title='This Week' 
-                                            number={messageData.thisWeek}
+                                            icon={
+                                                <Icon
+                                                    component={
+                                                        RiMessage3Line
+                                                    }
+                                                />
+                                            }
+                                            color={
+                                                colors.message
+                                            }
+                                            title="This Week"
+                                            number={
+                                                messageData.thisWeek
+                                            }
                                         />
                                     </Col>
-                                    <Col md={6} sm={24} xs={24}>
+
+                                    <Col
+                                        md={6}
+                                        sm={24}
+                                        xs={24}
+                                    >
                                         <StatCard
                                             isCard={false}
                                             loading={loading}
-                                            icon={<Icon component={RiMessage3Line}/>}
-                                            color={colors.message} 
-                                            title='Today' 
-                                            number={messageData.today}
+                                            icon={
+                                                <Icon
+                                                    component={
+                                                        RiMessage3Line
+                                                    }
+                                                />
+                                            }
+                                            color={
+                                                colors.message
+                                            }
+                                            title="Today"
+                                            number={
+                                                messageData.today
+                                            }
                                         />
                                     </Col>
+
                                 </Row>
                             </Card>
                         </Col>
+
                     </Row>
                 </Col>
-                <Col 
+
+                {/* ==========================================
+                    RIGHT SECTION
+                =========================================== */}
+
+                <Col
                     xl={6}
                     lg={6}
                     md={24}
@@ -497,95 +846,110 @@ const getWallpaper = () => {
                     xs={24}
                 >
                     <Row gutter={24}>
+
+                        {/* Current Template */}
+
                         <Col
                             xl={24}
                             lg={24}
                             md={12}
                             sm={24}
                             xs={24}
-                            style={{marginBottom: 24}}
+                            style={{
+                                marginBottom: 24
+                            }}
                         >
                             <Card
                                 onClick={() => {
-                                    history.push(Routes.web.admin.portfolioConfig);
+                                    history.push(
+                                        Routes.web.admin
+                                            .portfolioConfig
+                                    );
                                 }}
-                                hoverable={true}
+                                hoverable
                                 bordered={false}
-                                size={'small'}
-                                loading={loading}
-                                className='z-shadow'
-                                cover={
-                                    <Image
-                                        alt={currentTemplate && currentTemplate.title}
-                                        width={'100%'}
-                                        height={imageHeight}
-                                        style={{
-                                            objectFit: 'fill',
-                                            opacity: '0.8'
-                                        }}
-                                        preview={false}
-                                        src={currentTemplate && currentTemplate.image}
-                                        placeholder={<Spin><WallpaperLoading/></Spin>}
-                                    />
-                                }
-                            >
-                                <Card.Meta
-                                    title={<React.Fragment><small>{currentTemplate && currentTemplate.title}</small></React.Fragment>}
-                                    description={<React.Fragment><small>Change Template</small></React.Fragment>}
-                                />
-                            </Card>
-                        </Col>
-                        <Col
-                            xl={24}
-                            lg={24}
-                            md={12}
-                            sm={24}
-                            xs={24}
-                        >
-                            <Card
-                                style={{cursor: 'default'}}
-                                hoverable={true}
                                 size="small"
-                                bordered={false}
-                                className='z-shadow'
                                 loading={loading}
+                                className="z-shadow"
                                 cover={
-                                    wallpaper ? (
+                                    currentTemplate?.image ? (
                                         <Image
+                                            alt={
+                                                currentTemplate?.title ||
+                                                'Current Template'
+                                            }
+                                            width="100%"
                                             height={imageHeight}
-                                            src={wallpaper.image}
-                                            style={imageStyle}
-                                            placeholder={
-                                                <Image
-                                                    height={imageHeight}
-                                                    width={'100%'}
-                                                    preview={false}
-                                                    src={wallpaper.thumbnail}
-                                                    style={imageStyle}
-                                                />
+                                            style={{
+                                                objectFit: 'fill',
+                                                opacity: '0.8'
+                                            }}
+                                            preview={false}
+                                            src={
+                                                currentTemplate.image
                                             }
                                         />
                                     ) : (
-                                        <Spin><WallpaperLoading/></Spin>
+                                        <TemplateLoading>
+                                            <Spin />
+                                        </TemplateLoading>
                                     )
-                                    
                                 }
                             >
                                 <Card.Meta
-                                    title={<React.Fragment><small>Daily Wallpaper {demoMode && (
-                                        <a href="https://github.com/arifszn/reddit-image-fetcher" target="_blank" rel="noreferrer"><InfoCircleOutlined style={{paddingLeft: '2px', color: 'rgba(0, 0, 0, 0.45)'}}/></a>
-                                    )}</small></React.Fragment>}
+                                    title={
+                                        <small>
+                                            {currentTemplate?.title ||
+                                                'Portfolio Template'}
+                                        </small>
+                                    }
                                     description={
-                                        <div onClick={getWallpaper} style={{cursor: 'pointer'}}><small>Get Another</small></div>
+                                        <small>
+                                            Change Template
+                                        </small>
                                     }
                                 />
                             </Card>
                         </Col>
+
+                        {/* Portfolio Information */}
+
+                        <Col
+                            xl={24}
+                            lg={24}
+                            md={12}
+                            sm={24}
+                            xs={24}
+                        >
+                            <Card
+                                bordered={false}
+                                size="small"
+                                className="z-shadow"
+                            >
+                                <Card.Meta
+                                    title={
+                                        <small>
+                                            Portfolio Dashboard
+                                        </small>
+                                    }
+                                    description={
+                                        <small>
+                                            Manage your portfolio
+                                            information, projects,
+                                            skills, services and
+                                            messages.
+                                        </small>
+                                    }
+                                />
+                            </Card>
+                        </Col>
+
                     </Row>
                 </Col>
+
             </Row>
         </React.Fragment>
-    )
-}
+    );
+};
 
 export default React.memo(Dashboard);

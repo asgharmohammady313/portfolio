@@ -1,132 +1,84 @@
-<p align="center">
-  <a href="http://arifszn.github.io/ezfolio" target="_blank">
-    <img src="https://arifszn.github.io/ezfolio/img/short-logo.png" alt="Ezfolio" title="Ezfolio" width="80">
-  </a>
-</p>
+# My Portfolio
 
-<h1 align="center">Ezfolio</h1>
-<p align="center">Open Source Portfolio CMS</p>
+A modern personal portfolio website built with Laravel, React, and Ant Design.
 
-<p align="center">
-    <a href="https://laravel.com/"><img src="https://img.shields.io/badge/laravel-8-blue" alt="laravel 8"></a>
-    <a href="https://reactjs.org/"><img src="https://img.shields.io/badge/react-17-blue" alt="react 17"></a>
-    <a href="https://ant.design/"><img src="https://img.shields.io/badge/antd-4-blue" alt="antd 4"></a>
-    <a href="https://github.com/arifszn/ezfolio/blob/main/LICENSE"><img src="https://img.shields.io/github/license/arifszn/ezfolio"/></a>
-</p>
+## About
 
-<br/>
+This project is my personal portfolio website where I showcase my skills, projects, education, experience, and services.
 
-<p align="center">
-    <a href="https://arifszn.github.io/ezfolio">
-        <img src="https://arifszn.github.io/ezfolio/img/assets/preview.gif" alt="Cover"/>
-    </a>
-    <br/>
-</p>
+## Technologies
 
-<span className="keyword">Ezfolio</span> is a professional open source portfolio CMS built using <b>Laravel</b>, <b>React</b> and <b>Ant Design</b>. Choose from awesome templates and control what you like to show your audience. It offers a minimalist admin interface with lots of option for customizations. Get all the features of a portfolio site including visitor tracking, google analytics, maintenance mode, contact form, SEO and many more. 
+- Laravel
+- PHP
+- React
+- Ant Design
+- MySQL / MariaDB
+- JavaScript
+- HTML
+- CSS
 
-This project can be used as a guide for learning Laravel with React and making a SPA.
+## Features
 
-- Made with Laravel, React and Ant Design
-- JWT Authentication
-- Single Page Application
-- Modern and Responsive Design
-- Multiple Templates
-- Theme Color Customization
-- Custom Scripting
-- Visitor Tracking
-- Location Tracking
-- Google Analytics
-- Maintenance Mode
-- Contact Form
-- Search Engine Optimization
-- Section Visibility
-- And Much More…
-
-> Client: https://github.com/arifszn/ezfolio/tree/main/resources/js/client
-
-
-## Docs
-
-Checkout the <a href="http://arifszn.github.io/ezfolio">docs</a>. 
-
+- Personal profile
+- Skills and experience
+- Education
+- Portfolio projects
+- Services
+- Contact form
+- Visitor statistics
+- Admin dashboard
+- Responsive design
+- Social media links
 
 ## Installation
 
-### With Docker
-- Run ```cp .env.example .env```.
-- Run the below command to install Composer dependencies:
-    ```sh
-    docker run --rm \
-        -u "$(id -u):$(id -g)" \
-        -v $(pwd):/var/www/html \
-        -w /var/www/html \
-        laravelsail/php81-composer:latest \
-        composer install --ignore-platform-reqs
-    ```
-- Run ```./vendor/bin/sail up -d```.
-- Run ```./vendor/bin/sail artisan migrate --seed```. If you face error `Connection refused`, set `DB_HOST=mysql` in .env file.
-- Run ```./vendor/bin/sail npm install```.
-- Run ```./vendor/bin/sail npm run prod``` or ```./vendor/bin/sail npm run watch```.
+Clone the repository and install the dependencies:
 
-`sail` is equivalent of `docker-compose`, read [`laravel/sail`](https://laravel.com/docs/8.x/sail) doc.
-
-
-### Without Docker
-
-- Run ```cp .env.example .env```
-- Run ```composer install```
-- Provide db name, username and password in .env
-- Run ```php artisan migrate --seed```
-- Run ```npm install```
-- Run ```npm run prod``` or ```npm run watch```
-- Run ```php aritsan serve```
-
-Admin credentials:
-
-```
-Email: admin@admin.com
-Password: 12345
+```bash
+composer install
+npm install
 ```
 
-For more info, visit the <a href="http://arifszn.github.io/ezfolio">docs</a>.
+Create the environment file:
 
+```bash
+copy .env.example .env
+```
 
-## Screenshots
+Generate the application key:
 
-### Admin Panel
-<kbd><img src="https://arifszn.github.io/ezfolio/img/assets/screenshots/login.png" alt="Login"/></kbd>
+```bash
+php artisan key:generate
+```
 
-<kbd><img src="https://arifszn.github.io/ezfolio/img/assets/screenshots/dashboard.png" alt="Dashboard"/></kbd>
+Configure your database in `.env`, then run:
 
-<kbd><img src="https://arifszn.github.io/ezfolio/img/assets/screenshots/basic-config.png" alt="Config"/></kbd>
+```bash
+php artisan migrate
+```
 
-<kbd><img src="https://arifszn.github.io/ezfolio/img/assets/screenshots/theme.png" alt="Theme"/></kbd>
+Build the frontend:
 
-<kbd><img src="https://arifszn.github.io/ezfolio/img/assets/screenshots/visitors.png" alt="Visitors"/></kbd>
+```bash
+npm run prod
+```
 
-<kbd><img src="https://arifszn.github.io/ezfolio/img/assets/screenshots/project.png" alt="Project"/></kbd>
+Start the Laravel development server:
 
-### Front
-<kbd><img src="https://arifszn.github.io/ezfolio/img/assets/screenshots/procyon.png" alt="Procyon"/></kbd>
+```bash
+php artisan serve
+```
 
-<kbd><img src="https://arifszn.github.io/ezfolio/img/assets/screenshots/rigel.png" alt="Rigel"/></kbd>
+The application will be available at:
 
-<kbd><img src="https://arifszn.github.io/ezfolio/img/assets/screenshots/vega.png" alt="Vega"/></kbd>
+```text
+http://127.0.0.1:8000
+```
 
+## Author
 
-## Contributing
-
-Any contributors who want to make this project better can make contributions, which will be greatly appreciated. Check out our <a href="https://github.com/arifszn/ezfolio/blob/main/CONTRIBUTING.md">contribution guide</a> for more info.
-
-
-## Support
-
-<a href="https://www.buymeacoffee.com/arifszn" target="_blank">
-  <img src="https://raw.githubusercontent.com/arifszn/arifszn/main/assets/bmc-button.png" alt="Buy Me A Coffee" style="height: 60px !important;width: 217px !important;" >
-</a>
-
+Asghar Mohammadi
 
 ## License
 
-**Ezfolio** is licensed under the [MIT License](https://github.com/arifszn/ezfolio/blob/main/LICENSE).
+This project is for personal and educational use.
