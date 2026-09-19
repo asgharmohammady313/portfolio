@@ -285,7 +285,7 @@ class PortfolioSeeder extends Seeder
                 }
                 
                 $data = [
-                    'name' => 'John Doe',
+                    'name' => 'Asghar',
                     'email' => 'johndoe@example.com',
                     'avatar' => 'assets/common/img/avatar/default.png',
                     'cover' => 'assets/common/img/cover/default.png',
