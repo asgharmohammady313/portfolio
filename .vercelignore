@@ -1,0 +1,16 @@
+node_modules
+.git
+.vercel
+.env
+.env.local
+.env.production
+.env.vercel
+storage/logs/*
+tests
+package-lock-backup.json
+package-lock-original.json
+package_original.json
+Dashboard.js.backup
+
+vendor
+resources

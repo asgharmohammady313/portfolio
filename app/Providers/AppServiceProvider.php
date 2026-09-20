@@ -30,7 +30,6 @@ use App\Services\VisitorService;
 use Config;
 use Illuminate\Support\ServiceProvider;
 use Schema;
-use Str;
 use URL;
 
 class AppServiceProvider extends ServiceProvider
@@ -67,10 +66,10 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        if ((Config::get('app.url') !== 'http://localhost') && (Str::contains(Config::get('app.url'), 'https://'))) {
+        if ($this->app->environment('production')) {
             URL::forceScheme('https');
         }
-        
+
         Schema::defaultStringLength(191);
     }
 }

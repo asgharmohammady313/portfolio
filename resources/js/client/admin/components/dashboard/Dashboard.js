@@ -13,7 +13,6 @@ import {
     Typography
 } from 'antd';
 
-import Icon from '@ant-design/icons';
 
 import { BiArchive } from 'react-icons/bi';
 import { GoKeyboard } from 'react-icons/go';
@@ -336,9 +335,7 @@ const Dashboard = () => {
                                 }
                                 loading={loading}
                                 icon={
-                                    <Icon
-                                        component={GoKeyboard}
-                                    />
+                                    <GoKeyboard />
                                 }
                                 color={colors.skill}
                                 title="Skill"
@@ -365,9 +362,7 @@ const Dashboard = () => {
                                 }
                                 loading={loading}
                                 icon={
-                                    <Icon
-                                        component={GiSecretBook}
-                                    />
+                                    <GiSecretBook />
                                 }
                                 color={colors.education}
                                 title="Education"
@@ -394,9 +389,7 @@ const Dashboard = () => {
                                 }
                                 loading={loading}
                                 icon={
-                                    <Icon
-                                        component={BsBriefcase}
-                                    />
+                                    <BsBriefcase />
                                 }
                                 color={colors.experience}
                                 title="Experience"
@@ -425,9 +418,7 @@ const Dashboard = () => {
                                 }
                                 loading={loading}
                                 icon={
-                                    <Icon
-                                        component={BiArchive}
-                                    />
+                                    <BiArchive />
                                 }
                                 color={colors.project}
                                 title="Project"
@@ -470,9 +461,7 @@ const Dashboard = () => {
                                 }
                                 loading={loading}
                                 icon={
-                                    <Icon
-                                        component={RiServiceLine}
-                                    />
+                                    <RiServiceLine />
                                 }
                                 color={colors.service}
                                 title="Service"
@@ -591,11 +580,7 @@ const Dashboard = () => {
                                             isCard={false}
                                             loading={loading}
                                             icon={
-                                                <Icon
-                                                    component={
-                                                        AiOutlineTeam
-                                                    }
-                                                />
+                                                <AiOutlineTeam />
                                             }
                                             color={
                                                 colors.visitor
@@ -616,11 +601,7 @@ const Dashboard = () => {
                                             isCard={false}
                                             loading={loading}
                                             icon={
-                                                <Icon
-                                                    component={
-                                                        AiOutlineTeam
-                                                    }
-                                                />
+                                                <AiOutlineTeam />
                                             }
                                             color={
                                                 colors.visitor
@@ -641,11 +622,7 @@ const Dashboard = () => {
                                             isCard={false}
                                             loading={loading}
                                             icon={
-                                                <Icon
-                                                    component={
-                                                        AiOutlineTeam
-                                                    }
-                                                />
+                                                <AiOutlineTeam />
                                             }
                                             color={
                                                 colors.visitor
@@ -666,11 +643,7 @@ const Dashboard = () => {
                                             isCard={false}
                                             loading={loading}
                                             icon={
-                                                <Icon
-                                                    component={
-                                                        AiOutlineTeam
-                                                    }
-                                                />
+                                                <AiOutlineTeam />
                                             }
                                             color={
                                                 colors.visitor
@@ -737,11 +710,7 @@ const Dashboard = () => {
                                             isCard={false}
                                             loading={loading}
                                             icon={
-                                                <Icon
-                                                    component={
-                                                        RiMessage3Line
-                                                    }
-                                                />
+                                                <RiMessage3Line />
                                             }
                                             color={
                                                 colors.message
@@ -762,11 +731,7 @@ const Dashboard = () => {
                                             isCard={false}
                                             loading={loading}
                                             icon={
-                                                <Icon
-                                                    component={
-                                                        RiMessage3Line
-                                                    }
-                                                />
+                                                <RiMessage3Line />
                                             }
                                             color={
                                                 colors.message
@@ -787,11 +752,7 @@ const Dashboard = () => {
                                             isCard={false}
                                             loading={loading}
                                             icon={
-                                                <Icon
-                                                    component={
-                                                        RiMessage3Line
-                                                    }
-                                                />
+                                                <RiMessage3Line />
                                             }
                                             color={
                                                 colors.message
@@ -812,11 +773,7 @@ const Dashboard = () => {
                                             isCard={false}
                                             loading={loading}
                                             icon={
-                                                <Icon
-                                                    component={
-                                                        RiMessage3Line
-                                                    }
-                                                />
+                                                <RiMessage3Line />
                                             }
                                             color={
                                                 colors.message
@@ -954,3 +911,4 @@ const Dashboard = () => {
 };
 
 export default React.memo(Dashboard);
+
