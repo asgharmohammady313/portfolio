@@ -40,9 +40,9 @@ class PortfolioSeeder extends Seeder
             $visitor = resolve(VisitorInterface::class);
             $message = resolve(MessageInterface::class);
 
-            //portfolio config table seed
+            // portfolio config table seed
 
-            //template
+            // template
             $data = [
                 'setting_key' => CoreConstants::PORTFOLIO_CONFIG__TEMPLATE,
                 'setting_value' => 'procyon',
@@ -50,7 +50,7 @@ class PortfolioSeeder extends Seeder
             ];
             $portfolioConfig->insertOrUpdate($data);
 
-            //accent color
+            // accent color
             $data = [
                 'setting_key' => CoreConstants::PORTFOLIO_CONFIG__ACCENT_COLOR,
                 'setting_value' => '#1890ff',
@@ -58,7 +58,7 @@ class PortfolioSeeder extends Seeder
             ];
             $portfolioConfig->insertOrUpdate($data);
 
-            //google analytics ID
+            // google analytics ID
             $data = [
                 'setting_key' => CoreConstants::PORTFOLIO_CONFIG__GOOGLE_ANALYTICS_ID,
                 'setting_value' => Config::get('custom.demo_mode') ? 'G-PS8JF33VLD' : '',
@@ -66,7 +66,7 @@ class PortfolioSeeder extends Seeder
             ];
             $portfolioConfig->insertOrUpdate($data);
 
-            //maintenance mode
+            // maintenance mode
             $data = [
                 'setting_key' => CoreConstants::PORTFOLIO_CONFIG__MAINTENANCE_MODE,
                 'setting_value' => CoreConstants::FALSE,
@@ -74,7 +74,7 @@ class PortfolioSeeder extends Seeder
             ];
             $portfolioConfig->insertOrUpdate($data);
 
-            //visibility
+            // visibility
             $data = [
                 'setting_key' => CoreConstants::PORTFOLIO_CONFIG__VISIBILITY_ABOUT,
                 'setting_value' => CoreConstants::TRUE,
@@ -145,7 +145,7 @@ class PortfolioSeeder extends Seeder
             ];
             $portfolioConfig->insertOrUpdate($data);
 
-            //header script
+            // header script
             $data = [
                 'setting_key' => CoreConstants::PORTFOLIO_CONFIG__SCRIPT_HEADER,
                 'setting_value' => '',
@@ -153,7 +153,7 @@ class PortfolioSeeder extends Seeder
             ];
             $portfolioConfig->insertOrUpdate($data);
 
-            //footer script
+            // footer script
             $data = [
                 'setting_key' => CoreConstants::PORTFOLIO_CONFIG__SCRIPT_FOOTER,
                 'setting_value' => '',
@@ -161,7 +161,7 @@ class PortfolioSeeder extends Seeder
             ];
             $portfolioConfig->insertOrUpdate($data);
 
-            //meta title
+            // meta title
             $data = [
                 'setting_key' => CoreConstants::PORTFOLIO_CONFIG__META_TITLE,
                 'setting_value' => '',
@@ -169,7 +169,7 @@ class PortfolioSeeder extends Seeder
             ];
             $portfolioConfig->insertOrUpdate($data);
 
-            //meta author
+            // meta author
             $data = [
                 'setting_key' => CoreConstants::PORTFOLIO_CONFIG__META_AUTHOR,
                 'setting_value' => '',
@@ -177,7 +177,7 @@ class PortfolioSeeder extends Seeder
             ];
             $portfolioConfig->insertOrUpdate($data);
 
-            //meta description
+            // meta description
             $data = [
                 'setting_key' => CoreConstants::PORTFOLIO_CONFIG__META_DESCRIPTION,
                 'setting_value' => '',
@@ -185,15 +185,16 @@ class PortfolioSeeder extends Seeder
             ];
             $portfolioConfig->insertOrUpdate($data);
 
-            //meta image
+            // meta image
             try {
                 if (is_dir('public/assets/common/img/meta-image')) {
                     $dir = 'public/assets/common/img/meta-image';
                 } else {
                     $dir = 'assets/common/img/meta-image';
                 }
+
                 $leave_files = array('.gitkeep');
-                
+
                 foreach (glob("$dir/*") as $file) {
                     if (!in_array(basename($file), $leave_files)) {
                         unlink($file);
@@ -202,6 +203,7 @@ class PortfolioSeeder extends Seeder
             } catch (\Throwable $th) {
                 Log::error($th->getMessage());
             }
+
             $data = [
                 'setting_key' => CoreConstants::PORTFOLIO_CONFIG__META_IMAGE,
                 'setting_value' => '',
@@ -209,18 +211,18 @@ class PortfolioSeeder extends Seeder
             ];
             $portfolioConfig->insertOrUpdate($data);
 
-
-            //about table seed
+            // about table seed
             try {
                 try {
-                    //avatar
+                    // avatar
                     if (is_dir('public/assets/common/img/avatar')) {
                         $dir = 'public/assets/common/img/avatar';
                     } else {
                         $dir = 'assets/common/img/avatar';
                     }
+
                     $leave_files = array('.gitkeep');
-                    
+
                     foreach (glob("$dir/*") as $file) {
                         if (!in_array(basename($file), $leave_files)) {
                             unlink($file);
@@ -228,23 +230,24 @@ class PortfolioSeeder extends Seeder
                     }
 
                     if (is_dir('public/assets/common/img/avatar')) {
-                        copy('public/assets/common/default/avatar/default.png', $dir.'/default.png');
+                        copy('public/assets/common/default/avatar/default.png', $dir . '/default.png');
                     } else {
-                        copy('assets/common/default/avatar/default.png', $dir.'/default.png');
+                        copy('assets/common/default/avatar/default.png', $dir . '/default.png');
                     }
                 } catch (\Throwable $th) {
                     Log::error($th->getMessage());
                 }
 
                 try {
-                    //cover
+                    // cover
                     if (is_dir('public/assets/common/img/cover')) {
                         $dir = 'public/assets/common/img/cover';
                     } else {
                         $dir = 'assets/common/img/cover';
                     }
+
                     $leave_files = array('.gitkeep');
-                    
+
                     foreach (glob("$dir/*") as $file) {
                         if (!in_array(basename($file), $leave_files)) {
                             unlink($file);
@@ -252,16 +255,16 @@ class PortfolioSeeder extends Seeder
                     }
 
                     if (is_dir('public/assets/common/img/cover')) {
-                        copy('public/assets/common/default/cover/default.png', $dir.'/default.png');
+                        copy('public/assets/common/default/cover/default.png', $dir . '/default.png');
                     } else {
-                        copy('assets/common/default/cover/default.png', $dir.'/default.png');
+                        copy('assets/common/default/cover/default.png', $dir . '/default.png');
                     }
                 } catch (\Throwable $th) {
                     Log::error($th->getMessage());
                 }
 
                 try {
-                    //cv
+                    // cv
                     if (is_dir('public/assets/common/cv')) {
                         $dir = 'public/assets/common/cv';
                     } else {
@@ -269,21 +272,22 @@ class PortfolioSeeder extends Seeder
                     }
 
                     $leave_files = array('.gitkeep');
-                    
+
                     foreach (glob("$dir/*") as $file) {
                         if (!in_array(basename($file), $leave_files)) {
                             unlink($file);
                         }
                     }
+
                     if (is_dir('public/assets/common/default/cv/')) {
-                        copy('public/assets/common/default/cv/default.pdf', $dir.'/default.pdf');
+                        copy('public/assets/common/default/cv/default.pdf', $dir . '/default.pdf');
                     } else {
-                        copy('assets/common/default/cv/default.pdf', $dir.'/default.pdf');
+                        copy('assets/common/default/cv/default.pdf', $dir . '/default.pdf');
                     }
                 } catch (\Throwable $th) {
                     Log::error($th->getMessage());
                 }
-                
+
                 $data = [
                     'name' => 'Asghar Mohammadi',
                     'email' => 'asgharmohammay313@gmail.com',
@@ -291,8 +295,12 @@ class PortfolioSeeder extends Seeder
                     'cover' => 'assets/common/img/cover/default.png',
                     'phone' => '0766989461',
                     'address' => 'Kabul, Afghanistan',
-                    'description' => ''description' => 'I am a passionate Full Stack Developer from Afghanistan, focused on building modern, responsive and user-friendly web applications using Laravel, PHP, React and MySQL.',',
-                    'taglines' => ["I am Software Engineer", "I am Web Developer", "I am Full Stack Engineer"],
+                    'description' => 'I am a passionate Full Stack Developer from Afghanistan, focused on building modern, responsive and user-friendly web applications using Laravel, PHP, React and MySQL.',
+                    'taglines' => [
+                        "I am Software Engineer",
+                        "I am Web Developer",
+                        "I am Full Stack Engineer"
+                    ],
                     'social_links' => [
                         [
                             'title' => 'LinkedIn',
@@ -317,9 +325,10 @@ class PortfolioSeeder extends Seeder
                     ],
                     'seederCV' => 'assets/common/cv/default.pdf',
                 ];
+
                 $about->store($data);
 
-                //education table seed
+                // education table seed
                 try {
                     $data = [
                         'institution' => 'University of Colorado Boulder',
@@ -347,7 +356,7 @@ class PortfolioSeeder extends Seeder
                 Log::error($th->getMessage());
             }
 
-            //skill table seed
+            // skill table seed
             try {
                 $data = [
                     'name' => 'Laravel',
@@ -406,7 +415,7 @@ class PortfolioSeeder extends Seeder
                 Log::error($th->getMessage());
             }
 
-            //experience table seed
+            // experience table seed
             try {
                 $data = [
                     'company' => 'ABC LIMITED',
@@ -435,18 +444,18 @@ class PortfolioSeeder extends Seeder
                 Log::error($th->getMessage());
             }
 
-            //project table seed
+            // project table seed
             try {
                 try {
-                    //images
+                    // images
                     if (is_dir('public/assets/common/img/projects')) {
                         $dir = 'public/assets/common/img/projects';
                     } else {
                         $dir = 'assets/common/img/projects';
                     }
-                    
+
                     $leave_files = array('.gitkeep');
-                    
+
                     foreach (glob("$dir/*") as $file) {
                         if (!in_array(basename($file), $leave_files)) {
                             unlink($file);
@@ -467,14 +476,15 @@ class PortfolioSeeder extends Seeder
                         'assets/common/img/projects/demo_project_1_2.png'
                     ]
                 ];
+
                 if (is_dir('public/assets/common/default/projects')) {
-                    copy('public/assets/common/default/projects/demo_project_1_1.png', $dir.'/demo_project_1_1.png');
-                    copy('public/assets/common/default/projects/demo_project_1_2.png', $dir.'/demo_project_1_2.png');
+                    copy('public/assets/common/default/projects/demo_project_1_1.png', $dir . '/demo_project_1_1.png');
+                    copy('public/assets/common/default/projects/demo_project_1_2.png', $dir . '/demo_project_1_2.png');
                 } else {
-                    copy('assets/common/default/projects/demo_project_1_1.png', $dir.'/demo_project_1_1.png');
-                    copy('assets/common/default/projects/demo_project_1_2.png', $dir.'/demo_project_1_2.png');
+                    copy('assets/common/default/projects/demo_project_1_1.png', $dir . '/demo_project_1_1.png');
+                    copy('assets/common/default/projects/demo_project_1_2.png', $dir . '/demo_project_1_2.png');
                 }
-                
+
                 $project->store($data);
 
                 $data = [
@@ -490,11 +500,11 @@ class PortfolioSeeder extends Seeder
                 ];
 
                 if (is_dir('public/assets/common/default/projects')) {
-                    copy('public/assets/common/default/projects/demo_project_2_1.png', $dir.'/demo_project_2_1.png');
-                    copy('public/assets/common/default/projects/demo_project_2_2.png', $dir.'/demo_project_2_2.png');
+                    copy('public/assets/common/default/projects/demo_project_2_1.png', $dir . '/demo_project_2_1.png');
+                    copy('public/assets/common/default/projects/demo_project_2_2.png', $dir . '/demo_project_2_2.png');
                 } else {
-                    copy('assets/common/default/projects/demo_project_2_1.png', $dir.'/demo_project_2_1.png');
-                    copy('assets/common/default/projects/demo_project_2_2.png', $dir.'/demo_project_2_2.png');
+                    copy('assets/common/default/projects/demo_project_2_1.png', $dir . '/demo_project_2_1.png');
+                    copy('assets/common/default/projects/demo_project_2_2.png', $dir . '/demo_project_2_2.png');
                 }
 
                 $project->store($data);
@@ -510,21 +520,21 @@ class PortfolioSeeder extends Seeder
                         'assets/common/img/projects/demo_project_3_2.png'
                     ]
                 ];
-                
+
                 if (is_dir('public/assets/common/default/projects')) {
-                    copy('public/assets/common/default/projects/demo_project_3_1.png', $dir.'/demo_project_3_1.png');
-                    copy('public/assets/common/default/projects/demo_project_3_2.png', $dir.'/demo_project_3_2.png');
+                    copy('public/assets/common/default/projects/demo_project_3_1.png', $dir . '/demo_project_3_1.png');
+                    copy('public/assets/common/default/projects/demo_project_3_2.png', $dir . '/demo_project_3_2.png');
                 } else {
-                    copy('assets/common/default/projects/demo_project_3_1.png', $dir.'/demo_project_3_1.png');
-                    copy('assets/common/default/projects/demo_project_3_2.png', $dir.'/demo_project_3_2.png');
+                    copy('assets/common/default/projects/demo_project_3_1.png', $dir . '/demo_project_3_1.png');
+                    copy('assets/common/default/projects/demo_project_3_2.png', $dir . '/demo_project_3_2.png');
                 }
-                
+
                 $project->store($data);
             } catch (\Throwable $th) {
                 Log::error($th->getMessage());
             }
 
-            //service table seed
+            // service table seed
             try {
                 $data = [
                     'title' => 'Web Development',
@@ -551,7 +561,7 @@ class PortfolioSeeder extends Seeder
             }
 
             try {
-                //visitor table seed
+                // visitor table seed
                 foreach (range(1, 72) as $index) {
                     $data = [
                         'tracking_id' => Str::random(30),
@@ -570,7 +580,7 @@ class PortfolioSeeder extends Seeder
             }
 
             try {
-                //message table seed
+                // message table seed
                 foreach (range(1, 17) as $index) {
                     $data = [
                         'name' => $faker->name(),

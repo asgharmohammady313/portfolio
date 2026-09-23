@@ -185,7 +185,7 @@ class SettingService implements SettingInterface
             }
 
             //get site name
-            $data['siteName'] = DotenvEditor::getValue('APP_NAME');
+            $data['siteName'] = config('app.name');
 
             //get logo
             $result = $this->getSettingByKey(CoreConstants::SETTING__LOGO, ['setting_value']);

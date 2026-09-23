@@ -8,6 +8,7 @@ const Wrapper = styled.section`
     margin-top: 30px;
 `;
 
+
 const code = document.querySelector('[data-code]') ? document.querySelector('[data-code]').dataset.code : 500;
 const message = document.querySelector('[data-message]') ? document.querySelector('[data-message]').dataset.message : 'Something went wrong';
 
